@@ -1,0 +1,16 @@
+{
+  "name": "generator-webpack-webapp",
+  "version": "0.0.15",
+  "description": "快速创建一个利用webapck, react, es6 babel 的开发项目 (简化版，开发使用)",
+  "dependencies": {
+    "yeoman-generator": "^0.21.1",
+    "chalk": "^1.0.0",
+    "yosay": "^1.0.2"
+  },
+  "devDependencies": {
+    "yeoman-assert": "^2.0.0"
+  },
+  "keywords": [
+    "yeoman-generator"
+  ]
+}
