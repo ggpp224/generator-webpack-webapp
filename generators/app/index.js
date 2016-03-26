@@ -4,38 +4,69 @@ var chalk = require('chalk');
 var yosay = require('yosay');
 
 module.exports = yeoman.generators.Base.extend({
-  prompting: function () {
-    var done = this.async();
 
-    // Have Yeoman greet the user.
-    this.log(yosay(
-      'Welcome to the first-class ' + chalk.red('') + ' generator!'
-    ));
+  prompting: {
+    dir: function(){
 
-    var prompts = [{
-      type: 'confirm',
-      name: 'someOption',
-      message: 'Would you like to enable this option?',
-      default: true
-    }];
+      if(this.options.createDirectory !== undefined){
+        return true;
+      }
 
-    this.prompt(prompts, function (props) {
-      this.props = props;
-      // To access props later use this.props.someOption;
+      var done = this.async();
+      var prompt = [{
+        type: 'confirm',
+        name: 'createDirectory',
+        message: '你是否要为你的项目创建一个新的目录?'
+      }];
 
-      done();
-    }.bind(this));
+      this.prompt(prompt, function (response) {
+        this.options.createDirectory = response.createDirectory;
+        done();
+      }.bind(this));
+    },
+
+    dirname: function () {
+      if(!this.options.createDirectory || this.options.dirname){
+        return;
+      }
+
+      var done = this.async();
+      var prompt = [{
+        type: 'input',
+        name: 'dirname',
+        message: '请输入目录名称'
+      }];
+
+      this.prompt(prompt, function (response) {
+        this.options.dirname = response.dirname;
+        done();
+      }.bind(this));
+    }
+
   },
 
-  writing: function () {
-    this.fs.copy(
-      this.templatePath(),
-      this.destinationPath()
-    );
-    this.fs.copy(
-        this.templatePath('.babelrc'),
-        this.destinationPath('.babelrc')
-    );
+
+  writing: {
+
+    buildEnv: function () {
+      //创建目录
+      if(this.options.createDirectory){
+        this.destinationRoot(this.options.dirname);
+        this.appname = this.options.dirname;
+      }
+    },
+
+    assetsDirs: function(){
+      this.fs.copy(
+          this.templatePath(),
+          this.destinationPath()
+      );
+      this.fs.copy(
+          this.templatePath('.babelrc'),
+          this.destinationPath('.babelrc')
+      );
+    }
+
   },
 
   install: function () {
