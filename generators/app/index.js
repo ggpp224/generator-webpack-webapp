@@ -41,8 +41,31 @@ module.exports = yeoman.generators.Base.extend({
         this.options.dirname = response.dirname;
         done();
       }.bind(this));
-    }
+    },
 
+    install: function () {
+
+      if(this.options.install){
+        return true;
+      }
+
+      var done = this.async();
+      var prompt = [{
+        type: 'list',
+        name: 'install',
+        message: '选取是否自动安装项目依赖?',
+        choices: [
+            '不安装,  项目创建完后可自己手动安装',
+            '安装, 根据网络情况可能花费较长时间'
+        ],
+        store: true
+      }];
+
+      this.prompt(prompt, function (response) {
+        this.options.install = response.install;
+        done();
+      }.bind(this));
+    }
   },
 
 
@@ -70,6 +93,10 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   install: function () {
+    var autoInstall = this.options.install;
+    if((/^安装/).test(autoInstall)){
+      this.installDependencies();
+    }
     //this.installDependencies();
   }
 });
